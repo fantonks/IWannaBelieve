@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/header";
@@ -26,7 +26,7 @@ type ListEntry = {
   sum_balls: number;
 };
 
-export default function ListsPage() {
+function ListsPageContent() {
   const searchParams = useSearchParams();
   const urlProgram = searchParams.get("program") || "";
   const urlDate = searchParams.get("date") || "";
@@ -345,5 +345,20 @@ export default function ListsPage() {
       </main>
 
     </div>
+  );
+}
+
+export default function ListsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white">
+        <Header />
+        <main className="flex-1 max-w-7xl mx-auto px-4 py-6 w-full">
+          <div className="text-center text-gray-500 py-12">Загрузка…</div>
+        </main>
+      </div>
+    }>
+      <ListsPageContent />
+    </Suspense>
   );
 }
